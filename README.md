@@ -1,5 +1,5 @@
 ## How To Run
-Create the file `nvestment-tracker/server/.env` with your Atlas URI and the server port:
+Create the file `investment-tracker/server/.env` with your Atlas URI and the server port:
 ```
 ATLAS_URI=mongodb+srv://<username>:<password>@clusterab.wkumyvv.mongodb.net/?retryWrites=true&w=majority
 ```
