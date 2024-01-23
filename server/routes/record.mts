@@ -7,14 +7,14 @@ const router = express.Router();
 
 // This section will help you get a list of all the records.
 router.get("/", async (req : Request, res : Response) => {
-  let collection = await db.collection("records");
+  let collection = await db.collection("investments");
   let results = await collection.find({}).toArray();
   res.send(results).status(200);
 });
 
 // This section will help you get a single record by id
 router.get("/:id", async (req : Request, res : Response) => {
-  let collection = await db.collection("records");
+  let collection = await db.collection("investments");
   let query = {_id: new ObjectId(req.params.id)};
   let result = await collection.findOne(query);
 
@@ -26,10 +26,12 @@ router.get("/:id", async (req : Request, res : Response) => {
 router.post("/", async (req : Request, res : Response) => {
   let newDocument = {
     name: req.body.name,
-    position: req.body.position,
-    level: req.body.level,
+    ticker: req.body.ticker,
+    quantity: req.body.quantity,
+    bookValue: req.body.bookValue,
+    marketValue: req.body.marketValue,
   };
-  let collection = await db.collection("records");
+  let collection = await db.collection("investments");
   let result = await collection.insertOne(newDocument);
   res.send(result).status(204);
 });
@@ -40,12 +42,14 @@ router.patch("/:id", async (req : Request, res : Response) => {
   const updates =  {
     $set: {
       name: req.body.name,
-      position: req.body.position,
-      level: req.body.level
+      ticker: req.body.ticker,
+      quantity: req.body.quantity,
+      bookValue: req.body.bookValue,
+      marketValue: req.body.marketValue,
     }
   };
 
-  let collection = await db.collection("records");
+  let collection = await db.collection("investments");
   let result = await collection.updateOne(query, updates);
   res.send(result).status(200);
 });
@@ -54,7 +58,7 @@ router.patch("/:id", async (req : Request, res : Response) => {
 router.delete("/:id", async (req : Request, res : Response) => {
   const query = { _id: new ObjectId(req.params.id) };
 
-  const collection = db.collection("records");
+  const collection = db.collection("investments");
   let result = await collection.deleteOne(query);
 
   res.send(result).status(200);
