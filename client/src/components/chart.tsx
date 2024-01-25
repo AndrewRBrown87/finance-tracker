@@ -1,27 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
 
-export const data = [
-  ["Year", "Market Value"],
-  [2020, 100000],
-  [2021, 150000],
-  [2022, 120000],
-  [2023, 200000],
-];
+interface Props {
+  ticker: string;
+}
 
-export const options = {
-  title: "Investment Chart",
-  hAxis: { title: "Year", minValue: 2020, maxValue: 2023, format: "####",},
-  vAxis: { title: "Market Value", minValue: 0, maxValue: 200000 },
-};
-
-export default function InvestmentChart() {
+export default function InvestmentChart(props: Props) {
  const [records, setRecords] = useState([]);
 
  // This method fetches the records from the database.
  useEffect(() => {
    async function getRecords() {
-     const response = await fetch(`http://localhost:5050/record/`);
+     const response = await fetch(`http://localhost:5050/record/investment/${props.ticker}`);
 
      if (!response.ok) {
        const message = `An error occurred: ${response.statusText}`;
@@ -38,6 +28,27 @@ export default function InvestmentChart() {
    return;
  }, [records.length]);
 
+  // This method will map out the records on the table
+ function recordList() {
+  return records.map((record : any) => {
+    return (
+      [record.date.split("-")[0], record.price]
+    );
+  });
+}
+
+const data = [
+  ["Year", "Price"],
+  ...recordList(),
+];
+
+console.log(data);
+
+ const options = {
+  title: props.ticker,
+  hAxis: { title: "Year", format: Date,},
+  vAxis: { title: "Price", minValue: 0 },
+};
 
  // This following section will display the chart with the investment data.
  return (

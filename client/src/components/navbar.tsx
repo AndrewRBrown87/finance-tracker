@@ -10,9 +10,9 @@ import { NavLink } from "react-router-dom";
 export default function Navbar() {
  return (
    <div>
-     <nav className="navbar navbar-expand-lg navbar-light bg-light">
+     <nav className="navbar navbar-expand-lg navbar-light bg-white">
        <NavLink className="navbar-brand" to="/">
-          Investment Tracker
+        <img alt="Loonie logo" style={{"width" : 25 + '%'}} src="/loonie.png"></img>Investment Tracker
        </NavLink>
        <button
          className="navbar-toggler"

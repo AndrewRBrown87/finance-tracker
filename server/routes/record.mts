@@ -22,6 +22,15 @@ router.get("/:id", async (req : Request, res : Response) => {
   else res.send(result).status(200);
 });
 
+// This section will help you get an investment record by id
+router.get("/investment/:id", async (req : Request, res : Response) => {
+  let collection = await db.collection(req.params.id);
+  let results = await collection.find({}).toArray();
+
+  if (!results) res.send("Not found").status(404);
+  else res.send(results).status(200);
+});
+
 // This section will help you create a new record.
 router.post("/", async (req : Request, res : Response) => {
   let newDocument = {

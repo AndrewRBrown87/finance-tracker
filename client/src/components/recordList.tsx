@@ -83,7 +83,7 @@ export default function RecordList() {
        </thead>
        <tbody>{recordList()}</tbody>
      </table>
-     <InvestmentChart/>
+     <InvestmentChart ticker={"amd"}/>
    </div>
  );
 }
