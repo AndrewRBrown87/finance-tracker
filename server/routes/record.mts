@@ -2,6 +2,13 @@ import express from "express";
 import { Request, Response } from 'express';
 import db from "../db/conn.mts";
 import { ObjectId } from "mongodb";
+import request from 'request';
+
+var key = process.env.ALPHA_VANTAGE_KEY
+
+// replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
+var url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=BBD-B.TRT&outputsize=full&apikey=${key}`;
+//var url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=bombardier&apikey=${key}`
 
 const router = express.Router();
 
@@ -9,6 +16,22 @@ const router = express.Router();
 router.get("/", async (req : Request, res : Response) => {
   let collection = await db.collection("investments");
   let results = await collection.find({}).toArray();
+
+  request.get({
+    url: url,
+    json: true,
+    headers: {'User-Agent': 'request'}
+  }, (err: Error, res: any, data: any) => {
+    if (err) {
+      console.log('Error:', err);
+    } else if (res.statusCode !== 200) {
+      console.log('Status:', res.statusCode);
+    } else {
+      // data is successfully parsed as a JSON object:
+      console.log(data);
+    }
+});
+
   res.send(results).status(200);
 });
 
