@@ -2,12 +2,10 @@ import express from "express";
 import { Request, Response } from 'express';
 import db from "../db/conn.mts";
 import { ObjectId } from "mongodb";
-import request from 'request';
+import request from "request-promise";
+//import request from 'request';
 
 var key = process.env.ALPHA_VANTAGE_KEY
-
-// replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
-var url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=BBD-B.TRT&outputsize=full&apikey=${key}`;
 //var url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=bombardier&apikey=${key}`
 
 const router = express.Router();
@@ -16,6 +14,8 @@ const router = express.Router();
 router.get("/", async (req : Request, res : Response) => {
   let collection = await db.collection("investments");
   let results = await collection.find({}).toArray();
+
+  /* var url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=BBD-B.TRT&outputsize=full&apikey=${key}`;
 
   request.get({
     url: url,
@@ -28,9 +28,9 @@ router.get("/", async (req : Request, res : Response) => {
       console.log('Status:', res.statusCode);
     } else {
       // data is successfully parsed as a JSON object:
-      console.log(data);
+      console.log(data["Time Series (Daily)"]["2024-01-31"]);
     }
-});
+  }); */
 
   res.send(results).status(200);
 });
@@ -65,6 +65,38 @@ router.post("/", async (req : Request, res : Response) => {
   };
   let collection = await db.collection("investments");
   let result = await collection.insertOne(newDocument);
+
+  //request historical investment price data
+
+  let priceData :any = [];
+  var url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${req.body.ticker}&outputsize=full&apikey=${key}`;
+
+  await request.get({
+    url: url,
+    json: true,
+    headers: {'User-Agent': 'request'}
+  }, (err: Error, res: any, data: any) => {
+    if (err) {
+      console.log('Error:', err);
+    } else if (res.statusCode !== 200) {
+      console.log('Status:', res.statusCode);
+    } else {
+      // data is successfully parsed as a JSON object:
+
+      for (let date in data["Time Series (Daily)"]) {
+        priceData.push({ date: date, price: data["Time Series (Daily)"][date]['4. close']});
+      }
+
+      //console.log(priceData);
+    }
+  });
+
+  //create new collection for the investment
+  let investmentCollection = await db.collection(req.body.ticker);
+
+  let confirmation = await investmentCollection.insertMany(priceData); 
+
+
   res.send(result).status(204);
 });
 

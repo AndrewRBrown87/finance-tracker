@@ -32,33 +32,33 @@ export default function InvestmentChart(props: Props) {
  function recordList() {
   return records.map((record : any) => {
     return (
-      [record.date.split("-")[0], record.price]
+      [new Date(record.date), Number(record.price)]
     );
   });
 }
 
 const data = [
-  ["Year", "Price"],
+  ["Date", props.ticker],
   ...recordList(),
 ];
 
-console.log(data);
+//console.log(data[1]);
 
- const options = {
-  title: props.ticker,
-  hAxis: { title: "Year", format: Date,},
-  vAxis: { title: "Price", minValue: 0 },
-};
+//  const options = {
+//   title: props.ticker,
+//   hAxis: { title: "Date"},
+//   vAxis: { title: "Price" },
+// };
 
  // This following section will display the chart with the investment data.
  return (
    <div>
      <Chart
-        chartType="LineChart"
+        chartType="AnnotationChart"
         width="100%"
         height="400px"
         data={data}
-        options={options}
+        //options={options}
       />
    </div>
  );
