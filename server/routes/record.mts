@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import db from "../db/conn.mts";
 import { ObjectId } from "mongodb";
 import request from "request-promise";
-//import request from 'request';
 
 var key = process.env.ALPHA_VANTAGE_KEY
 //var url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=bombardier&apikey=${key}`
@@ -47,6 +46,54 @@ router.get("/:id", async (req : Request, res : Response) => {
 
 // This section will help you get an investment record by id
 router.get("/investment/:id", async (req : Request, res : Response) => {
+  //request historical investment price data
+  let investments = await db.collection("investments");
+  let query = {ticker: req.params.id};
+  let result = await investments.findOne(query);
+
+  //only pull new data from alphavantage once per day
+  if (Date.now() - 86400000 > result.updateTime) {
+    let priceData :any = [];
+    var url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${req.params.id}&outputsize=full&apikey=${key}`;
+
+    await request.get({
+      url: url,
+      json: true,
+      headers: {'User-Agent': 'request'}
+    }, (err: Error, res: any, data: any) => {
+      if (err) {
+        console.log('Error:', err);
+      } else if (res.statusCode !== 200) {
+        console.log('Status:', res.statusCode);
+      } else {
+        // data is successfully parsed as a JSON object:
+        for (let date in data["Time Series (Daily)"]) {
+          priceData.push({ date: date, price: data["Time Series (Daily)"][date]['4. close']});
+        }
+      }
+    });
+
+    //update collection for the investment
+    let investmentCollection = await db.collection(req.params.id);
+    let deletionResult = await investmentCollection.drop();
+    let confirmation = await investmentCollection.insertMany(priceData);
+
+    //set updateTime
+    const updates =  {
+      $set: {
+        name: result.name,
+        ticker: result.ticker,
+        quantity: result.quantity,
+        bookValue: result.bookValue,
+        marketValue: result.marketValue,
+        updateTime: Date.now(),
+      }
+    };
+
+    let updateResult = await investments.updateOne(query, updates);
+  }
+
+  //send investment data
   let collection = await db.collection(req.params.id);
   let results = await collection.find({}).toArray();
 
@@ -62,13 +109,14 @@ router.post("/", async (req : Request, res : Response) => {
     quantity: req.body.quantity,
     bookValue: req.body.bookValue,
     marketValue: req.body.marketValue,
+    updateTime: null,
   };
   let collection = await db.collection("investments");
   let result = await collection.insertOne(newDocument);
 
   //request historical investment price data
 
-  let priceData :any = [];
+  /* let priceData :any = [];
   var url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${req.body.ticker}&outputsize=full&apikey=${key}`;
 
   await request.get({
@@ -94,8 +142,7 @@ router.post("/", async (req : Request, res : Response) => {
   //create new collection for the investment
   let investmentCollection = await db.collection(req.body.ticker);
 
-  let confirmation = await investmentCollection.insertMany(priceData); 
-
+  let confirmation = await investmentCollection.insertMany(priceData); */ 
 
   res.send(result).status(204);
 });
@@ -110,6 +157,7 @@ router.patch("/:id", async (req : Request, res : Response) => {
       quantity: req.body.quantity,
       bookValue: req.body.bookValue,
       marketValue: req.body.marketValue,
+      updateTime: null,
     }
   };
 
