@@ -3,6 +3,7 @@ import { Chart } from "react-google-charts";
 
 interface Props {
   ticker: string;
+  purchaseDate: string;
 }
 
 export default function InvestmentChart(props: Props) {
@@ -58,7 +59,9 @@ const data = [
         width="100%"
         height="400px"
         data={data}
-        //options={options}
+        options={{
+          zoomStartTime : new Date(props.purchaseDate),
+        }}
       />
    </div>
  );

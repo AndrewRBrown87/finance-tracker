@@ -7,7 +7,7 @@ export default function Edit() {
    ticker: "",
    quantity: 0,
    bookValue: 0,
-   marketValue: 0,
+   purchaseDate: "",
    records: [],
  });
  const params : any = useParams();
@@ -53,7 +53,7 @@ export default function Edit() {
      ticker: form.ticker,
      quantity: form.quantity,
      bookValue: form.bookValue,
-     marketValue: form.marketValue,
+     purchaseDate: form.purchaseDate,
    };
 
    // This will send a post request to update the data in the database.
@@ -114,13 +114,13 @@ export default function Edit() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="marketValue">Market Value: </label>
+          <label htmlFor="purchaseDate">Purchase Date (yyyy-mm-dd): </label>
           <input
-            type="number"
+            type="text"
             className="form-control"
-            id="marketValue"
-            value={form.marketValue}
-            onChange={(e) => updateForm({ marketValue: e.target.value })}
+            id="purchaseDate"
+            value={form.purchaseDate}
+            onChange={(e) => updateForm({ purchaseDate: e.target.value })}
           />
         </div>
        <br />

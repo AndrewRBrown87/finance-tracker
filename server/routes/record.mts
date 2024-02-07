@@ -85,7 +85,7 @@ router.get("/investment/:id", async (req : Request, res : Response) => {
         ticker: result.ticker,
         quantity: result.quantity,
         bookValue: result.bookValue,
-        marketValue: result.marketValue,
+        purchaseDate: result.purchaseDate,
         updateTime: Date.now(),
       }
     };
@@ -108,7 +108,7 @@ router.post("/", async (req : Request, res : Response) => {
     ticker: req.body.ticker,
     quantity: req.body.quantity,
     bookValue: req.body.bookValue,
-    marketValue: req.body.marketValue,
+    purchaseDate: req.body.purchaseDate,
     updateTime: Date.now(),
   };
   let collection = await db.collection("investments");
@@ -154,7 +154,7 @@ router.patch("/:id", async (req : Request, res : Response) => {
       ticker: req.body.ticker,
       quantity: req.body.quantity,
       bookValue: req.body.bookValue,
-      marketValue: req.body.marketValue,
+      purchaseDate: req.body.purchaseDate,
       updateTime: null,
     }
   };

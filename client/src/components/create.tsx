@@ -7,7 +7,7 @@ export default function Create() {
    ticker: "",
    quantity: 0,
    bookValue: 0,
-   marketValue: 0,
+   purchaseDate: "",
  });
  const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ export default function Create() {
      return;
    });
 
-   setForm({ name: "", ticker: "", quantity: 0, bookValue: 0, marketValue: 0});
+   setForm({ name: "", ticker: "", quantity: 0, bookValue: 0, purchaseDate: ""});
    navigate("/");
  }
 
@@ -87,13 +87,13 @@ export default function Create() {
         />
       </div>
       <div className="form-group">
-        <label htmlFor="marketValue">Market Value</label>
+        <label htmlFor="purchaseDate">Purchase Date (yyyy-mm-dd)</label>
         <input
-          type="number"
+          type="text"
           className="form-control"
-          id="marketValue"
-          value={form.marketValue}
-          onChange={(e) => updateForm({ marketValue: e.target.value })}
+          id="purchaseDate"
+          value={form.purchaseDate}
+          onChange={(e) => updateForm({ purchaseDate: e.target.value })}
         />
       </div>
        <div className="form-group">
