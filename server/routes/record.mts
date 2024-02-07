@@ -75,7 +75,7 @@ router.get("/investment/:id", async (req : Request, res : Response) => {
 
     //update collection for the investment
     let investmentCollection = await db.collection(req.params.id);
-    let deletionResult = await investmentCollection.drop();
+    let deletionResult = await investmentCollection.deleteMany({});
     let confirmation = await investmentCollection.insertMany(priceData);
 
     //set updateTime
@@ -109,14 +109,14 @@ router.post("/", async (req : Request, res : Response) => {
     quantity: req.body.quantity,
     bookValue: req.body.bookValue,
     marketValue: req.body.marketValue,
-    updateTime: null,
+    updateTime: Date.now(),
   };
   let collection = await db.collection("investments");
   let result = await collection.insertOne(newDocument);
 
   //request historical investment price data
 
-  /* let priceData :any = [];
+  let priceData :any = [];
   var url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${req.body.ticker}&outputsize=full&apikey=${key}`;
 
   await request.get({
@@ -134,15 +134,13 @@ router.post("/", async (req : Request, res : Response) => {
       for (let date in data["Time Series (Daily)"]) {
         priceData.push({ date: date, price: data["Time Series (Daily)"][date]['4. close']});
       }
-
-      //console.log(priceData);
     }
   });
 
   //create new collection for the investment
   let investmentCollection = await db.collection(req.body.ticker);
 
-  let confirmation = await investmentCollection.insertMany(priceData); */ 
+  let confirmation = await investmentCollection.insertMany(priceData);
 
   res.send(result).status(204);
 });

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import InvestmentChart from "./chart";
 
 const Record = (props : any) => (
- <tr>
+ <tr onClick={() => props.setSelected(props.record.ticker)}>
    <td>{props.record.name}</td>
    <td>{props.record.ticker}</td>
    <td>{props.record.quantity}</td>
@@ -24,6 +24,7 @@ const Record = (props : any) => (
 
 export default function RecordList() {
  const [records, setRecords] = useState([]);
+ const [selected, setSelected] = useState("meta");
 
  // This method fetches the records from the database.
  useEffect(() => {
@@ -60,6 +61,7 @@ export default function RecordList() {
    return records.map((record : any) => {
      return (
        <Record
+         setSelected={() => setSelected(record.ticker)}
          record={record}
          deleteRecord={() => deleteRecord(record._id)}
          key={record._id}
@@ -68,7 +70,7 @@ export default function RecordList() {
    });
  }
 
- // This following section will display the table with the records of individuals.
+ // This following section will display the table with the investment records.
  return (
    <div>
      <table className="table table-striped" style={{ marginTop: 20 }}>
@@ -83,7 +85,7 @@ export default function RecordList() {
        </thead>
        <tbody>{recordList()}</tbody>
      </table>
-     <InvestmentChart ticker={"meta"}/>
+     <InvestmentChart ticker={selected}/>
    </div>
  );
 }

@@ -26,7 +26,7 @@ export default function InvestmentChart(props: Props) {
    getRecords();
 
    return;
- }, [records.length]);
+ }, [props.ticker]);
 
   // This method will map out the records on the table
  function recordList() {
