@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import InvestmentChart from "./chart";
+import MarketValueChart from "./marketValueChart";
 
 const Record = (props : any) => (
- <tr onClick={() => {props.setSelected(props.record.ticker); props.setPurchaseDate(props.record.purchaseDate)}}>
+ <tr onClick={() => {props.setSelected(props.record.ticker); props.setPurchaseDate(props.record.purchaseDate); props.setQuantity(props.record.quantity)}}>
    <td>{props.record.name}</td>
    <td>{props.record.ticker}</td>
    <td>{props.record.quantity}</td>
@@ -26,6 +27,7 @@ export default function RecordList() {
  const [records, setRecords] = useState([]);
  const [selected, setSelected] = useState("");
  const [purchaseDate, setPurchaseDate] = useState("");
+ const [quantity, setQuantity] = useState(0);
 
  // This method fetches the records from the database.
  useEffect(() => {
@@ -42,6 +44,7 @@ export default function RecordList() {
      setRecords(records);
      setSelected(records[0].ticker);
      setPurchaseDate(records[0].purchaseDate);
+     setQuantity(records[0].quantity);
    }
 
    getRecords();
@@ -66,6 +69,7 @@ export default function RecordList() {
        <Record
          setSelected={() => setSelected(record.ticker)}
          setPurchaseDate={() => setPurchaseDate(record.purchaseDate)}
+         setQuantity={() => setQuantity(record.quantity)}
          record={record}
          deleteRecord={() => deleteRecord(record._id)}
          key={record._id}
@@ -75,6 +79,7 @@ export default function RecordList() {
  }
 
  // This following section will display the table with the investment records.
+ //{selected !== "" ? <InvestmentChart ticker={selected} purchaseDate={purchaseDate}/> : null}
  return (
    <div>
      <table className="table table-striped" style={{ marginTop: 20 }}>
@@ -89,7 +94,7 @@ export default function RecordList() {
        </thead>
        <tbody>{recordList()}</tbody>
      </table>
-     {selected !== "" ? <InvestmentChart ticker={selected} purchaseDate={purchaseDate}/> : null}
+     {selected !== "" ? <MarketValueChart ticker={selected} purchaseDate={purchaseDate} quantity={quantity}/> : null}
    </div>
  );
 }

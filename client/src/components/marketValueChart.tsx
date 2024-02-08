@@ -4,9 +4,10 @@ import { Chart } from "react-google-charts";
 interface Props {
   ticker: string;
   purchaseDate: string;
+  quantity: number;
 }
 
-export default function InvestmentChart(props: Props) {
+export default function MarketValueChart(props: Props) {
  const [records, setRecords] = useState([]);
 
  // This method fetches the records from the database.
@@ -31,10 +32,15 @@ export default function InvestmentChart(props: Props) {
 
   // This method will map out the records on the table
  function recordList() {
-  return records.map((record : any) => {
-    return (
-      [new Date(record.date), Number(record.price)]
-    );
+  return records.filter ((record : any) => {
+    if (new Date(record.date) >= new Date(props.purchaseDate)) {
+      return true;
+    }
+    return false;
+  }).map((record : any) => {
+      return (
+            [new Date(record.date), Number(record.price * props.quantity)]
+          );
   });
 }
 
@@ -42,14 +48,6 @@ const data = [
   ["Date", props.ticker],
   ...recordList(),
 ];
-
-//console.log(data[1]);
-
-//  const options = {
-//   title: props.ticker,
-//   hAxis: { title: "Date"},
-//   vAxis: { title: "Price" },
-// };
 
  // This following section will display the chart with the investment data.
  return (
