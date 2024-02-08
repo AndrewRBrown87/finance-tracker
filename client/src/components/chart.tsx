@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
 
 interface Props {
-  ticker: string;
-  purchaseDate: string;
+  ticker: any;
+  purchaseDate: any;
 }
 
 export default function InvestmentChart(props: Props) {

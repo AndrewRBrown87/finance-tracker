@@ -24,7 +24,7 @@ const Record = (props : any) => (
 
 export default function RecordList() {
  const [records, setRecords] = useState([]);
- const [selected, setSelected] = useState("amd");
+ const [selected, setSelected] = useState("");
  const [purchaseDate, setPurchaseDate] = useState("");
 
  // This method fetches the records from the database.
@@ -40,6 +40,8 @@ export default function RecordList() {
 
      const records = await response.json();
      setRecords(records);
+     setSelected(records[0].ticker);
+     setPurchaseDate(records[0].purchaseDate);
    }
 
    getRecords();
@@ -87,7 +89,7 @@ export default function RecordList() {
        </thead>
        <tbody>{recordList()}</tbody>
      </table>
-     <InvestmentChart ticker={selected} purchaseDate={purchaseDate}/>
+     {selected !== "" ? <InvestmentChart ticker={selected} purchaseDate={purchaseDate}/> : null}
    </div>
  );
 }
