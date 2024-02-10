@@ -4,7 +4,7 @@ import InvestmentChart from "./chart";
 import MarketValueChart from "./marketValueChart";
 
 const Record = (props : any) => (
- <tr onClick={() => {props.setSelected(props.record.ticker); props.setPurchaseDate(props.record.purchaseDate); props.setQuantity(props.record.quantity)}}>
+ <tr onClick={() => {props.setSelected(props.record.ticker); props.setPurchaseDate(props.record.purchaseDate); props.setQuantity(props.record.quantity); props.setBookValue(props.record.bookValue)}}>
    <td>{props.record.name}</td>
    <td>{props.record.ticker}</td>
    <td>{props.record.quantity}</td>
@@ -28,6 +28,7 @@ export default function RecordList() {
  const [selected, setSelected] = useState("");
  const [purchaseDate, setPurchaseDate] = useState("");
  const [quantity, setQuantity] = useState(0);
+ const [bookValue, setBookValue] = useState(0);
 
  // This method fetches the records from the database.
  useEffect(() => {
@@ -45,6 +46,7 @@ export default function RecordList() {
      setSelected(records[0].ticker);
      setPurchaseDate(records[0].purchaseDate);
      setQuantity(records[0].quantity);
+     setBookValue(records[0].bookValue);
    }
 
    getRecords();
@@ -70,6 +72,7 @@ export default function RecordList() {
          setSelected={() => setSelected(record.ticker)}
          setPurchaseDate={() => setPurchaseDate(record.purchaseDate)}
          setQuantity={() => setQuantity(record.quantity)}
+         setBookValue={() => setBookValue(record.bookValue)}
          record={record}
          deleteRecord={() => deleteRecord(record._id)}
          key={record._id}
@@ -94,7 +97,7 @@ export default function RecordList() {
        </thead>
        <tbody>{recordList()}</tbody>
      </table>
-     {selected !== "" ? <MarketValueChart ticker={selected} purchaseDate={purchaseDate} quantity={quantity}/> : null}
+     {selected !== "" ? <MarketValueChart ticker={selected} purchaseDate={purchaseDate} quantity={quantity} bookValue={bookValue}/> : null}
    </div>
  );
 }
