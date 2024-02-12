@@ -8,7 +8,7 @@ const Record = (props : any) => (
    <td>{props.record.name}</td>
    <td>{props.record.ticker}</td>
    <td>{props.record.quantity}</td>
-   <td>{props.record.bookValue}</td>
+   <td>${props.record.bookValue}</td>
    <td>{props.record.purchaseDate}</td>
    <td>
      <Link className="btn btn-link" to={`/edit/${props.record._id}`}>Edit</Link> |
@@ -93,6 +93,7 @@ export default function RecordList() {
            <th>Quantity</th>
            <th>Book Value</th>
            <th>Purchase Date</th>
+           <th></th>
          </tr>
        </thead>
        <tbody>{recordList()}</tbody>

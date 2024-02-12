@@ -46,11 +46,11 @@ export default function MarketValueChart(props: Props) {
 }
 
 const data = [
-  ["Date", props.ticker],
+  ["Date", `${props.ticker} Market Value`],
   ...recordList(),
 ];
 
-//this will calculate the percent change over the last 30 days
+//this will calculate the percent change over the specified number of days
 function percentChange(days : number) {
   if (data.length > days) {
     return ((Number(data[1][1]) - Number(data[days][1])) / Number(data[days][1]) * 100).toFixed(2);
@@ -61,10 +61,29 @@ function percentChange(days : number) {
   return null;
 }
 
+//this will calculate the value change over the specified number of days
+function valueChange(days : number) {
+  if (data.length > days) {
+    return (Number(data[1][1]) - Number(data[days][1])).toFixed(2);
+  }
+  else if (data.length > 1) {
+    return (Number(data[1][1]) - Number(data[data.length-1][1])).toFixed(2);
+  }
+  return null;
+}
+
 //this will calculate the percent change since the purchase date
 function totalPercentChange() {
   if (data.length > 1) {
     return ((Number(data[1][1]) - props.bookValue) / props.bookValue * 100).toFixed(2);
+  }
+  return null;
+}
+
+//this will calculate the value change since the purchase date
+function totalValueChange() {
+  if (data.length > 1) {
+    return (Number(data[1][1]) - props.bookValue).toFixed(2);
   }
   return null;
 }
@@ -81,11 +100,32 @@ function totalPercentChange() {
           zoomStartTime : new Date(props.purchaseDate),
         }}
       />
-      <div>
-       <br/>Percent Change over Last 30 Days : { percentChange(22) }%
-       <br/>Percent Change over Last Year : { percentChange(252) }%
-       <br/>Percent Change Since Purchase Date : { totalPercentChange() }%
-      </div>
+      <table className="table table-striped" style={{ marginTop: 20 }}>
+       <thead>
+         <tr>
+           <th>Duration</th>
+           <th>Percent Change</th>
+           <th>Value Change</th>
+         </tr>
+       </thead>
+       <tbody>
+        <tr>
+          <td>Last Month</td>
+          <td>{ percentChange(22) }%</td>
+          <td>${ valueChange(22) }</td>
+        </tr>
+        <tr>
+          <td>Last Year</td>
+          <td>{ percentChange(252) }%</td>
+          <td>${ valueChange(252) }</td>
+        </tr>
+        <tr>
+          <td>Since Purchase Date</td>
+          <td>{ totalPercentChange() }%</td>
+          <td>${ totalValueChange() }</td>
+        </tr>
+       </tbody>
+     </table>
     </div>
   );
 }
