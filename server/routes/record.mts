@@ -95,7 +95,7 @@ router.get("/investment/:id", async (req : Request, res : Response) => {
 
   //send investment data
   let collection = await db.collection(req.params.id);
-  let results = await collection.find({}).toArray();
+  let results = await collection.find({}).sort({date:-1}).toArray();
 
   if (!results) res.send("Not found").status(404);
   else res.send(results).status(200);
