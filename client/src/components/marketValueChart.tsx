@@ -88,11 +88,11 @@ function totalValueChange() {
   return null;
 }
 
-//this function will determine the market value change for a given year
-function yearChange(year : number) {
+//this component will determine the market value change for a given year
+const YearChange = (props : any) => {
   if (data.length > 1) {
     let dataYear = data.filter ((record : any) => {
-      if (new Date(record[0]).getFullYear() === year) {
+      if (new Date(record[0]).getFullYear() === props.year) {
         return true;
       }
       return false;
@@ -100,7 +100,7 @@ function yearChange(year : number) {
 
     return (
       <tr>
-        <td>{year}</td>
+        <td>{props.year}</td>
         <td>{ ((Number(dataYear[0][1]) - Number(dataYear[dataYear.length - 1][1])) / Number(dataYear[dataYear.length - 1][1]) * 100).toFixed(2) }%</td>
         <td>${ (Number(dataYear[0][1]) - Number(dataYear[dataYear.length - 1][1])).toFixed(2) }</td>
       </tr>
@@ -114,7 +114,7 @@ function years() {
   let year = new Date().getFullYear();
   let rows = []; 
     while (year >= new Date(props.purchaseDate).getFullYear()) {
-      rows.push(yearChange(year));
+      rows.push(< YearChange year={year} key={year} />);
       year--;
     }
 
