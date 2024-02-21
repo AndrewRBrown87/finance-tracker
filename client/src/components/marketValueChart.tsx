@@ -88,6 +88,52 @@ function totalValueChange() {
   return null;
 }
 
+//this will calculate the average annual percent change
+function averageAnnualPercentChange() {
+  let year = new Date().getFullYear();
+  let years = []; 
+    while (year >= new Date(props.purchaseDate).getFullYear()) {
+      if (data.length > 1) {
+        let dataYear = data.filter ((record : any) => {
+          if (new Date(record[0]).getFullYear() === year) {
+            return true;
+          }
+          return false;
+        })
+        years.push(((Number(dataYear[0][1]) - Number(dataYear[dataYear.length - 1][1])) / Number(dataYear[dataYear.length - 1][1]) * 100));
+      }
+      year--;
+    }
+
+  const sum = years.reduce((a, b) => a + b, 0);
+  const avg = (sum / years.length) || 0;
+
+  return avg.toFixed(2);
+}
+
+//this will calculate the average annual value change
+function averageAnnualValueChange() {
+  let year = new Date().getFullYear();
+  let years = []; 
+    while (year >= new Date(props.purchaseDate).getFullYear()) {
+      if (data.length > 1) {
+        let dataYear = data.filter ((record : any) => {
+          if (new Date(record[0]).getFullYear() === year) {
+            return true;
+          }
+          return false;
+        })
+        years.push((Number(dataYear[0][1]) - Number(dataYear[dataYear.length - 1][1])));
+      }
+      year--;
+    }
+
+  const sum = years.reduce((a, b) => a + b, 0);
+  const avg = (sum / years.length) || 0;
+
+  return avg.toFixed(2);
+}
+
 //this component will determine the market value change for a given year
 const YearChange = (props : any) => {
   if (data.length > 1) {
@@ -156,6 +202,11 @@ function years() {
           <td>Since Purchase Date</td>
           <td>{ totalPercentChange() }%</td>
           <td>${ totalValueChange() }</td>
+        </tr>
+        <tr>
+          <td>Average Annual</td>
+          <td>{ averageAnnualPercentChange() }%</td>
+          <td>${ averageAnnualValueChange() }</td>
         </tr>
          { years() }
        </tbody>

@@ -104,11 +104,7 @@ router.get("/investment/:id", async (req : Request, res : Response) => {
 // This section will help you create a new record.
 router.post("/", async (req : Request, res : Response) => {
   let newDocument = {
-    name: req.body.name,
-    ticker: req.body.ticker,
-    quantity: req.body.quantity,
-    bookValue: req.body.bookValue,
-    purchaseDate: req.body.purchaseDate,
+    ...req.body,
     updateTime: Date.now(),
   };
   let collection = await db.collection("investments");
@@ -150,11 +146,7 @@ router.patch("/:id", async (req : Request, res : Response) => {
   const query = { _id: new ObjectId(req.params.id) };
   const updates =  {
     $set: {
-      name: req.body.name,
-      ticker: req.body.ticker,
-      quantity: req.body.quantity,
-      bookValue: req.body.bookValue,
-      purchaseDate: req.body.purchaseDate,
+      ...req.body,
       updateTime: null,
     }
   };
