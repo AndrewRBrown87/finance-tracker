@@ -189,12 +189,12 @@ function years() {
        </thead>
        <tbody>
         <tr>
-          <td>Last Month</td>
+          <td>Last 30 Days</td>
           <td>{ percentChange(22) }%</td>
           <td>${ valueChange(22) }</td>
         </tr>
         <tr>
-          <td>Last Year</td>
+          <td>Last 365 Days</td>
           <td>{ percentChange(252) }%</td>
           <td>${ valueChange(252) }</td>
         </tr>
